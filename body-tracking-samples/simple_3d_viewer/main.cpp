@@ -333,17 +333,6 @@ template<typename T> Mat create_mat_from_buffer(T* data, int width, int height, 
 int main(int argc, char** argv)
 {
 
-	//mongocxx::instance instance{}; // This should be done only once.
-	//mongocxx::client client{ mongocxx::uri{"mongodb+srv://body_tracking_admin:hnbbody987@body-tracking-fzs8i.gcp.mongodb.net/test?retryWrites=true&w=majority"} };
-	//mongocxx::database db = client["test"];
-	//mongocxx::collection coll = db["body_tracking"];
-
-	//std::cout << "DB 접속 완료" << std::endl;
-
-	//int camera_num;
-	//std::cout << "카메라 번호를 입력해주세요 숫자 ( 1 ~ 9 )" << std::endl;
-	//std::cin >> camera_num;
-	//std::cout << "camera_num : " << camera_num << std::endl;
 
 	k4a_depth_mode_t depthCameraMode = ParseDepthModeFromArg(argc, argv);
 	if (depthCameraMode == K4A_DEPTH_MODE_OFF)
@@ -353,62 +342,62 @@ int main(int argc, char** argv)
 	PrintAppUsage();
 
 	k4a_device_t device0 = nullptr;
-	//k4a_device_t device1 = nullptr;
-	//k4a_device_t device2 = nullptr;
+	k4a_device_t device1 = nullptr;
+	k4a_device_t device2 = nullptr;
 
-	//k4a_device_open(1, &device1);
-	//k4a_device_open(2, &device2);
+	k4a_device_open(1, &device1);
+	k4a_device_open(2, &device2);
 	k4a_device_open(0, &device0);
 
 
 	// Start camera. Make sure depth camera is enabled.
 	k4a_device_configuration_t deviceConfig0 = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
-	//deviceConfig0.wired_sync_mode = K4A_WIRED_SYNC_MODE_MASTER;
+	deviceConfig0.wired_sync_mode = K4A_WIRED_SYNC_MODE_MASTER;
 	deviceConfig0.depth_mode = depthCameraMode;
 	deviceConfig0.color_resolution = K4A_COLOR_RESOLUTION_720P;
 	deviceConfig0.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32; //K4A_IMAGE_FORMAT_COLOR_MJPG
 	deviceConfig0.synchronized_images_only = true;
 	deviceConfig0.camera_fps = K4A_FRAMES_PER_SECOND_5;
 
-	//k4a_device_configuration_t deviceConfig1 = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
-	//deviceConfig1.wired_sync_mode = K4A_WIRED_SYNC_MODE_SUBORDINATE;
-	//deviceConfig1.depth_mode = depthCameraMode;
-	//deviceConfig1.color_resolution = K4A_COLOR_RESOLUTION_720P;
-	//deviceConfig1.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32; //K4A_IMAGE_FORMAT_COLOR_MJPG
-	//deviceConfig1.synchronized_images_only = true;
-	//deviceConfig1.camera_fps = K4A_FRAMES_PER_SECOND_5;
+	k4a_device_configuration_t deviceConfig1 = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
+	deviceConfig1.wired_sync_mode = K4A_WIRED_SYNC_MODE_SUBORDINATE;
+	deviceConfig1.depth_mode = depthCameraMode;
+	deviceConfig1.color_resolution = K4A_COLOR_RESOLUTION_720P;
+	deviceConfig1.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32; //K4A_IMAGE_FORMAT_COLOR_MJPG
+	deviceConfig1.synchronized_images_only = true;
+	deviceConfig1.camera_fps = K4A_FRAMES_PER_SECOND_5;
 
-	//k4a_device_configuration_t deviceConfig2 = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
-	//deviceConfig2.wired_sync_mode = K4A_WIRED_SYNC_MODE_SUBORDINATE;
-	//deviceConfig2.depth_mode = depthCameraMode;
-	//deviceConfig2.color_resolution = K4A_COLOR_RESOLUTION_720P;
-	//deviceConfig2.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32; //K4A_IMAGE_FORMAT_COLOR_MJPG
-	//deviceConfig2.synchronized_images_only = true;
-	//deviceConfig2.camera_fps = K4A_FRAMES_PER_SECOND_5;
+	k4a_device_configuration_t deviceConfig2 = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
+	deviceConfig2.wired_sync_mode = K4A_WIRED_SYNC_MODE_SUBORDINATE;
+	deviceConfig2.depth_mode = depthCameraMode;
+	deviceConfig2.color_resolution = K4A_COLOR_RESOLUTION_720P;
+	deviceConfig2.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32; //K4A_IMAGE_FORMAT_COLOR_MJPG
+	deviceConfig2.synchronized_images_only = true;
+	deviceConfig2.camera_fps = K4A_FRAMES_PER_SECOND_5;
 
-	/*k4a_device_start_cameras(device1, &deviceConfig1);
-	k4a_device_start_cameras(device2, &deviceConfig2);*/
+	k4a_device_start_cameras(device1, &deviceConfig1);
+	k4a_device_start_cameras(device2, &deviceConfig2);
 	k4a_device_start_cameras(device0, &deviceConfig0);
 
 
 
 	// Get calibration information
 
-	/*k4a_calibration_t sensorCalibration2;
+	k4a_calibration_t sensorCalibration2;
 	k4a_device_get_calibration(device2, deviceConfig2.depth_mode, deviceConfig2.color_resolution, &sensorCalibration2);
 
 	k4a_calibration_t sensorCalibration1;
-	k4a_device_get_calibration(device1, deviceConfig1.depth_mode, deviceConfig1.color_resolution, &sensorCalibration1);*/
+	k4a_device_get_calibration(device1, deviceConfig1.depth_mode, deviceConfig1.color_resolution, &sensorCalibration1);
 
 	k4a_calibration_t sensorCalibration0;
 	k4a_device_get_calibration(device0, deviceConfig0.depth_mode, deviceConfig0.color_resolution, &sensorCalibration0);
 
 
-	/*int depthWidth2 = sensorCalibration2.depth_camera_calibration.resolution_width;
+	int depthWidth2 = sensorCalibration2.depth_camera_calibration.resolution_width;
 	int depthHeight2 = sensorCalibration2.depth_camera_calibration.resolution_height;
 
 	int depthWidth1 = sensorCalibration1.depth_camera_calibration.resolution_width;
-	int depthHeight1 = sensorCalibration1.depth_camera_calibration.resolution_height;*/
+	int depthHeight1 = sensorCalibration1.depth_camera_calibration.resolution_height;
 
 	int depthWidth0 = sensorCalibration0.depth_camera_calibration.resolution_width;
 	int depthHeight0 = sensorCalibration0.depth_camera_calibration.resolution_height;
@@ -427,23 +416,23 @@ int main(int argc, char** argv)
 		k4a_capture_t sensorCapture0 = nullptr;
 		k4a_wait_result_t getCaptureResult0 = k4a_device_get_capture(device0, &sensorCapture0, 250); // timeout_in_ms is set to 0
 
-		//k4a_capture_t sensorCapture1 = nullptr;
-		//k4a_wait_result_t getCaptureResult1 = k4a_device_get_capture(device1, &sensorCapture1, 250); // timeout_in_ms is set to 0
+		k4a_capture_t sensorCapture1 = nullptr;
+		k4a_wait_result_t getCaptureResult1 = k4a_device_get_capture(device1, &sensorCapture1, 250); // timeout_in_ms is set to 0
 
-		//k4a_capture_t sensorCapture2 = nullptr;
-		//k4a_wait_result_t getCaptureResult2 = k4a_device_get_capture(device2, &sensorCapture2, 250); // timeout_in_ms is set to 0
+		k4a_capture_t sensorCapture2 = nullptr;
+		k4a_wait_result_t getCaptureResult2 = k4a_device_get_capture(device2, &sensorCapture2, 250); // timeout_in_ms is set to 0
 
 		std::string dateTimeString{};
 		std::string filename_depth_0{};
 		std::string filename_color_0{};
 		std::string filename_point_cloud{};
-		/*std::string filename_depth_1{};
+		std::string filename_depth_1{};
 		std::string filename_color_1{};
 		std::string filename_depth_2{};
 		std::string filename_color_2{};
-*/
+
 		if (getCaptureResult0 == K4A_WAIT_RESULT_SUCCEEDED 
-			//&& getCaptureResult1 == K4A_WAIT_RESULT_SUCCEEDED && getCaptureResult2 == K4A_WAIT_RESULT_SUCCEEDED
+			&& getCaptureResult1 == K4A_WAIT_RESULT_SUCCEEDED && getCaptureResult2 == K4A_WAIT_RESULT_SUCCEEDED
 			)
 		{
 
@@ -491,28 +480,28 @@ int main(int argc, char** argv)
 			////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-			//k4a_transformation_t transformation1 = k4a_transformation_create(&sensorCalibration1);
+			k4a_transformation_t transformation1 = k4a_transformation_create(&sensorCalibration1);
 
-			//k4a_image_t colorImage1 = k4a_capture_get_color_image(sensorCapture1);
-			//k4a_image_t depthImage1 = k4a_capture_get_depth_image(sensorCapture1);
-			//k4a_image_t transformed_color_image1;
-			//color_to_depth_camera(transformation1, depthImage1, colorImage1, &transformed_color_image1);
+			k4a_image_t colorImage1 = k4a_capture_get_color_image(sensorCapture1);
+			k4a_image_t depthImage1 = k4a_capture_get_depth_image(sensorCapture1);
+			k4a_image_t transformed_color_image1;
+			color_to_depth_camera(transformation1, depthImage1, colorImage1, &transformed_color_image1);
 
-			//uint8_t* depthBuffer1 = k4a_image_get_buffer(depthImage1);
+			uint8_t* depthBuffer1 = k4a_image_get_buffer(depthImage1);
 			////uint16_t* depthBuffer1 = reinterpret_cast<uint16_t*>(_depthBuffer1);
-			//uint8_t* colorBuffer1 = k4a_image_get_buffer(transformed_color_image1);
+			uint8_t* colorBuffer1 = k4a_image_get_buffer(transformed_color_image1);
 
-			//std::stringstream ssd1;
-			//ssd1 << "d1_" << timestamp << "_" << timestamp_usec << ".png";
-			//filename_depth_1 = ssd1.str();
+			std::stringstream ssd1;
+			ssd1 << "d1_" << timestamp << "_" << timestamp_usec << ".png";
+			filename_depth_1 = ssd1.str();
 
-			//std::stringstream ssc1;
-			//ssc1 << "c1_" << timestamp << "_" << timestamp_usec << ".jpg";
-			//filename_color_1 = ssc1.str();
+			std::stringstream ssc1;
+			ssc1 << "c1_" << timestamp << "_" << timestamp_usec << ".jpg";
+			filename_color_1 = ssc1.str();
 
 			//imwrite(filename_depth_1, create_mat_from_buffer<uint16_t>(depthBuffer1, depthWidth1, depthHeight1));
 
-			/*const Mat depthImg1(depthHeight1, depthWidth1, CV_16UC1, depthBuffer1);
+			const Mat depthImg1(depthHeight1, depthWidth1, CV_16UC1, depthBuffer1);
 			imwrite(filename_depth_1, depthImg1);
 
 			const Mat _colorImg1(depthHeight1, depthWidth1, CV_8UC4, colorBuffer1);
@@ -525,34 +514,34 @@ int main(int argc, char** argv)
 			/////////////////////////////////////////////////////////////////////////////////////////
 
 
-			//k4a_transformation_t transformation2 = k4a_transformation_create(&sensorCalibration2);
+			k4a_transformation_t transformation2 = k4a_transformation_create(&sensorCalibration2);
 
-			//k4a_image_t colorImage2 = k4a_capture_get_color_image(sensorCapture2);
-			//k4a_image_t depthImage2 = k4a_capture_get_depth_image(sensorCapture2);
-			//k4a_image_t transformed_color_image2;
-			//color_to_depth_camera(transformation2, depthImage2, colorImage2, &transformed_color_image2);
+			k4a_image_t colorImage2 = k4a_capture_get_color_image(sensorCapture2);
+			k4a_image_t depthImage2 = k4a_capture_get_depth_image(sensorCapture2);
+			k4a_image_t transformed_color_image2;
+			color_to_depth_camera(transformation2, depthImage2, colorImage2, &transformed_color_image2);
 
-			//uint8_t* depthBuffer2 = k4a_image_get_buffer(depthImage2);
+			uint8_t* depthBuffer2 = k4a_image_get_buffer(depthImage2);
 			////uint16_t* depthBuffer1 = reinterpret_cast<uint16_t*>(_depthBuffer1);
-			//uint8_t* colorBuffer2 = k4a_image_get_buffer(transformed_color_image2);
+			uint8_t* colorBuffer2 = k4a_image_get_buffer(transformed_color_image2);
 
-			//std::stringstream ssd2;
-			//ssd2 << "d2_" << timestamp << "_" << timestamp_usec << ".png";
-			//filename_depth_2 = ssd2.str();
+			std::stringstream ssd2;
+			ssd2 << "d2_" << timestamp << "_" << timestamp_usec << ".png";
+			filename_depth_2 = ssd2.str();
 
-			//std::stringstream ssc2;
-			//ssc2 << "c2_" << timestamp << "_" << timestamp_usec << ".jpg";
-			//filename_color_2 = ssc2.str();
+			std::stringstream ssc2;
+			ssc2 << "c2_" << timestamp << "_" << timestamp_usec << ".jpg";
+			filename_color_2 = ssc2.str();
 
-			////imwrite(filename_depth_1, create_mat_from_buffer<uint16_t>(depthBuffer1, depthWidth1, depthHeight1));
+			//imwrite(filename_depth_1, create_mat_from_buffer<uint16_t>(depthBuffer1, depthWidth1, depthHeight1));
 
-			//const Mat depthImg2(depthHeight2, depthWidth2, CV_16UC1, depthBuffer2);
-			//imwrite(filename_depth_2, depthImg2);
+			const Mat depthImg2(depthHeight2, depthWidth2, CV_16UC1, depthBuffer2);
+			imwrite(filename_depth_2, depthImg2);
 
-			//const Mat _colorImg2(depthHeight2, depthWidth2, CV_8UC4, colorBuffer2);
-			//Mat colorImg2; cvtColor(_colorImg2, colorImg2, COLOR_BGRA2BGR); imwrite(filename_color_2, colorImg2);
+			const Mat _colorImg2(depthHeight2, depthWidth2, CV_8UC4, colorBuffer2);
+			Mat colorImg2; cvtColor(_colorImg2, colorImg2, COLOR_BGRA2BGR); imwrite(filename_color_2, colorImg2);
 
-			//k4a_transformation_destroy(transformation2);
+			k4a_transformation_destroy(transformation2);
 
 
 			////imwrite(filename0, create_mat_from_buffer<uint16_t>(depthBuffer0, depthWidth, depthHeight));
@@ -562,37 +551,18 @@ int main(int argc, char** argv)
 			k4a_image_release(depthImage0);
 			k4a_image_release(transformed_color_image0);
 
-			/*k4a_image_release(colorImage1);
+			k4a_image_release(colorImage1);
 			k4a_image_release(depthImage1);
 			k4a_image_release(transformed_color_image1);
 
 			k4a_image_release(colorImage2);
 			k4a_image_release(depthImage2);
-			k4a_image_release(transformed_color_image2);*/
+			k4a_image_release(transformed_color_image2);
 
 			k4a_capture_release(sensorCapture0);
-			/*k4a_capture_release(sensorCapture1);
-			k4a_capture_release(sensorCapture2);*/
+			k4a_capture_release(sensorCapture1);
+			k4a_capture_release(sensorCapture2);
 
-
-
-
-			////k4a_transformation_t transformation1 = k4a_transformation_create(&sensorCalibration);
-
-			////k4a_image_t colorImage1 = k4a_capture_get_color_image(sensorCapture1);
-			////k4a_image_t depthImage1 = k4a_capture_get_depth_image(sensorCapture1);
-			////
-			////timestamp_usec = k4a_image_get_timestamp_usec(depthImage1);
-
-			////std::stringstream ss1;
-			////ss1 << "1_" << timestamp << "_" << timestamp_usec << ".ply";
-			//////filename1 = ss1.str();
-
-			//////point_cloud_depth_to_color(transformation1, depthImage1, colorImage1, filename1);
-
-			////k4a_image_release(colorImage1);
-			////k4a_image_release(depthImage1);
-			////k4a_transformation_destroy(transformation1);
 
 		}
 		else
